@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NearByRestaurants</string>
+    <string name="near_by_restaurants">Near by Restaurants</string>
 </resources>
