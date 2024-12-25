@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.wolt.nearbyrestaurants.R
-import com.wolt.nearbyrestaurants.ui.home.HomeScreen
+import com.wolt.nearbyrestaurants.ui.restaurants.HomeScreen
 import com.wolt.nearbyrestaurants.ui.theme.NearByRestaurantsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

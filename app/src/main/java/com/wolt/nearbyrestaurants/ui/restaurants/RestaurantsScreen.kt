@@ -1,4 +1,4 @@
-package com.wolt.nearbyrestaurants.ui.home
+package com.wolt.nearbyrestaurants.ui.restaurants
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
