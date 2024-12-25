@@ -1,4 +1,4 @@
-package com.wolt.nearbyrestaurants.ui.home
+package com.wolt.nearbyrestaurants.ui.restaurants
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val fetchNearByRestaurantsUseCase: FetchNearByRestaurantsUseCase,
+    private val fetchNearByRestaurants: FetchNearByRestaurantsUseCase,
     locationTracker: LocationTracker
 ) : ViewModel() {
 
@@ -59,7 +59,7 @@ class HomeViewModel @Inject constructor(
             latestLocation
                 .filterNotNull()
                 .collectLatest { location ->
-                    val nearByRestaurants = fetchNearByRestaurantsUseCase(location)
+                    val nearByRestaurants = fetchNearByRestaurants(location)
                     previewRestaurants(nearByRestaurants)
                     delay(10 * 1000L)
                 }
