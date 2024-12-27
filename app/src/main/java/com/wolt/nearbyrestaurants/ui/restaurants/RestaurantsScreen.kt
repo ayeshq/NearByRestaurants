@@ -50,7 +50,7 @@ import com.wolt.nearbyrestaurants.ui.theme.NearByRestaurantsTheme
 fun RestaurantsScreen(
     modifier: Modifier = Modifier,
     viewModel: RestaurantsViewModel = viewModel(),
-    innerPadding: PaddingValues = PaddingValues(0.dp),
+    innerPadding: PaddingValues = PaddingValues(8.dp),
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -128,14 +128,14 @@ fun LoadingScreen() {
 @Composable
 fun RestaurantsList(
     modifier: Modifier = Modifier,
-    innerPadding: PaddingValues = PaddingValues(0.dp),
+    innerPadding: PaddingValues = PaddingValues(8.dp),
     restaurants: List<Restaurant> = listOf(),
     onSaveToggled: (id : String) -> Unit
 ) {
     LazyColumn (
         contentPadding = innerPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier,
+        modifier = modifier.padding(start = 8.dp, end = 8.dp),
     ) {
         items(
             count = restaurants.size,
@@ -179,7 +179,7 @@ fun RestaurantCard(
         ),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
@@ -192,10 +192,10 @@ fun RestaurantCard(
                         .data(imageUrl)
                         .crossfade(true)
                         .build(),
-                    contentDescription = "Content Description", //TODO set content description
+                    contentDescription = name,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(48.dp)
                         .clip(CircleShape)
                         .align(Alignment.CenterStart)
                 )
@@ -206,7 +206,7 @@ fun RestaurantCard(
                         inFavourites = !inFavourites
                     },
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(48.dp)
                         .align(Alignment.CenterEnd)
                 ) {
                     Icon(

@@ -24,7 +24,7 @@ fun NearByRestaurantsApp() {
                 TopAppBar(
                     title = {
                         Text(
-                            stringResource(R.string.near_by_restaurants),
+                            stringResource(R.string.app_name),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )

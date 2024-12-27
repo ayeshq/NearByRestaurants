@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">NearByRestaurants</string>
-    <string name="near_by_restaurants">Near by Restaurants</string>
+    <string name="app_name">Nearby Restaurants</string>
     <string name="loading_nearby_restaurants">Looking for nearby restaurants…</string>
     <string name="no_restaurants_near_you">No restaurants found near you!</string>
     <string name="remove_from_favourites">Remove from favourites</string>

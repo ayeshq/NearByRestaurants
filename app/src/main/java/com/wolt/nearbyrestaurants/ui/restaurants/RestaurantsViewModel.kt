@@ -8,7 +8,7 @@ import com.wolt.nearbyrestaurants.restaurants.RestaurantsRepository
 import com.wolt.nearbyrestaurants.usecase.FetchNearByRestaurantsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,6 +37,8 @@ class RestaurantsViewModel @Inject constructor(
     private val _state = MutableStateFlow(NearByRestaurantsState())
     val state = _state.asStateFlow()
 
+    private var fetchRestaurantsJob: Job? = null
+
     init {
         observeLatestLocation()
     }
@@ -46,6 +48,8 @@ class RestaurantsViewModel @Inject constructor(
     }
 
     private fun observeLatestLocation() {
+        fetchRestaurantsJob?.cancel()
+
         //Load silently if there were previously rendered restaurants
         if (_state.value.restaurants.isEmpty()) {
             _state.update {
@@ -62,6 +66,8 @@ class RestaurantsViewModel @Inject constructor(
                     error = error
                 )
             }
+
+            observeLatestLocation()
         }
 
         viewModelScope.launch(errorHandler) {
@@ -70,7 +76,6 @@ class RestaurantsViewModel @Inject constructor(
                 .collectLatest { location ->
                     val nearByRestaurants = fetchNearByRestaurants(location)
                     previewRestaurants(nearByRestaurants)
-                    delay(10 * 1000L)
                 }
         }
     }

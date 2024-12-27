@@ -29,7 +29,7 @@ class LocationTrackerImpl @Inject constructor(
             }
 
             emit(locations[index])
-            delay(3 * 1000L)
+            delay(10 * 1000L)
             index++
         }
     }
