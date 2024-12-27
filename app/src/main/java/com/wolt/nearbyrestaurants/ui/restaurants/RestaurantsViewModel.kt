@@ -39,6 +39,10 @@ class RestaurantsViewModel @Inject constructor(
         observeLatestLocation()
     }
 
+    fun onSaveRestaurantToggled(restaurantId: String) {
+
+    }
+
     private fun observeLatestLocation() {
         //Load silently if there were previously rendered restaurants
         if (_state.value.restaurants.isEmpty()) {
