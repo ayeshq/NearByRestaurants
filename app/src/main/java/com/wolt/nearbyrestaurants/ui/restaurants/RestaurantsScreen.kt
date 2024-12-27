@@ -1,8 +1,6 @@
 package com.wolt.nearbyrestaurants.ui.restaurants
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +13,14 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -198,31 +200,24 @@ fun RestaurantCard(
                         .align(Alignment.CenterStart)
                 )
 
-                Image(
-                    painter = painterResource(
-                        if (inFavourites) {
-                            R.drawable.favorite_checked_24
-                        } else {
-                            R.drawable.favorite_unchecked_24
-                        }
-                    ),
-                    contentDescription = stringResource(
-                        if (inFavourites) {
-                            R.string.remove_from_favourites
-                        } else {
-                            R.string.add_to_favourites
-                        }
-                    ),
+                IconButton(
+                    onClick = {
+                        onSaveToggled(id)
+                        inFavourites = !inFavourites
+                    },
                     modifier = Modifier
                         .size(32.dp)
                         .align(Alignment.CenterEnd)
-                        .clickable(
-                            enabled = true,
-                        ) {
-                            onSaveToggled(id)
-                            inFavourites = !inFavourites
+                ) {
+                    Icon(
+                        imageVector = if (inFavourites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = if (inFavourites) {
+                            stringResource(R.string.remove_from_favourites)
+                        } else {
+                            stringResource(R.string.add_to_favourites)
                         },
-                )
+                    )
+                }
             }
 
             Text(
