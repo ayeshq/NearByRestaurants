@@ -22,6 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,7 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -68,7 +70,21 @@ fun RestaurantsScreen(
 }
 
 @Composable
-fun ErrorScreen() {}
+fun ErrorScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(
+            text = stringResource(R.string.something_went_wrong),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.colorScheme.error,
+            ),
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
 
 @Composable
 fun EmptyScreen() {
@@ -131,6 +147,7 @@ fun RestaurantsList(
                 name = restaurants[index].name,
                 imageUrl = restaurants[index].imageUrl,
                 description = restaurants[index].shortDescription,
+                isInFavourites = restaurants[index].isSaved,
                 onSaveToggled = onSaveToggled
             )
         }
@@ -143,9 +160,13 @@ fun RestaurantCard(
     name: String,
     description: String,
     imageUrl: String,
+    isInFavourites: Boolean = false,
     modifier: Modifier = Modifier,
-    onSaveToggled: (id : String) -> Unit
+    onSaveToggled: (id : String) -> Unit = {}
 ) {
+
+    var inFavourites by remember { mutableStateOf(isInFavourites) }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -178,13 +199,28 @@ fun RestaurantCard(
                 )
 
                 Image(
-                    painter = painterResource(id = R.drawable.favorite_unchecked_24),
-                    contentDescription = "Favourite",
+                    painter = painterResource(
+                        if (inFavourites) {
+                            R.drawable.favorite_checked_24
+                        } else {
+                            R.drawable.favorite_unchecked_24
+                        }
+                    ),
+                    contentDescription = stringResource(
+                        if (inFavourites) {
+                            R.string.remove_from_favourites
+                        } else {
+                            R.string.add_to_favourites
+                        }
+                    ),
                     modifier = Modifier
                         .size(32.dp)
                         .align(Alignment.CenterEnd)
-                        .clickable(true) {
+                        .clickable(
+                            enabled = true,
+                        ) {
                             onSaveToggled(id)
+                            inFavourites = !inFavourites
                         },
                 )
             }
@@ -199,8 +235,6 @@ fun RestaurantCard(
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyLarge,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -215,7 +249,6 @@ fun RestaurantCardPreview() {
             name = "Dummy Restaurant",
             description = "Details....",
             imageUrl = "",
-            onSaveToggled = {}
         )
     }
 }
@@ -229,7 +262,6 @@ fun RestaurantCardPreviewNight() {
             name = "Dummy Restaurant",
             description = "Details....",
             imageUrl = "",
-            onSaveToggled = {}
         )
     }
 }
@@ -271,5 +303,13 @@ fun LoadingScreenPreview() {
 fun EmptyScreenPreview() {
     NearByRestaurantsTheme {
         EmptyScreen()
+    }
+}
+
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun ErrorScreenPreview() {
+    NearByRestaurantsTheme {
+        ErrorScreen()
     }
 }

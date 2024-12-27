@@ -4,14 +4,17 @@ data class Restaurant(
     val id: String,
     val name: String,
     val shortDescription: String,
-    val imageUrl: String
+    val imageUrl: String,
+    var isSaved: Boolean = false
 ) {
     constructor(
-        section: SectionItem
+        section: SectionItem,
+        isSaved: Boolean = false
     ) : this(
         id = section.venue!!.id,
         name = section.venue.name,
         shortDescription = section.venue.shortDescription,
-        imageUrl = section.image.url
+        imageUrl = section.image.url,
+        isSaved = isSaved
     )
 }

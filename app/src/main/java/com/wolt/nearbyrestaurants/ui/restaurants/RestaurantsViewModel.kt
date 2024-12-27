@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wolt.nearbyrestaurants.location.LocationTracker
 import com.wolt.nearbyrestaurants.model.Restaurant
+import com.wolt.nearbyrestaurants.restaurants.RestaurantsRepository
 import com.wolt.nearbyrestaurants.usecase.FetchNearByRestaurantsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RestaurantsViewModel @Inject constructor(
     private val fetchNearByRestaurants: FetchNearByRestaurantsUseCase,
+    private val restaurantsRepository: RestaurantsRepository,
     locationTracker: LocationTracker
 ) : ViewModel() {
 
@@ -40,7 +42,7 @@ class RestaurantsViewModel @Inject constructor(
     }
 
     fun onSaveRestaurantToggled(restaurantId: String) {
-
+        restaurantsRepository.toggleFavouriteRestaurant(restaurantId)
     }
 
     private fun observeLatestLocation() {

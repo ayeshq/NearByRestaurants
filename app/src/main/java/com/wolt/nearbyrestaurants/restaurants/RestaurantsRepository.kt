@@ -6,4 +6,6 @@ import com.wolt.nearbyrestaurants.model.Restaurant
 interface RestaurantsRepository {
 
     suspend fun fetchNearByRestaurants(location: Location): List<Restaurant>
+
+    fun toggleFavouriteRestaurant(restaurantId: String)
 }
