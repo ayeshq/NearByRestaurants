@@ -1,13 +1,17 @@
 package com.wolt.nearbyrestaurants.model
 
 data class Restaurant(
-    private val section: SectionItem
+    val id: String,
+    val name: String,
+    val shortDescription: String,
+    val imageUrl: String
 ) {
-    val id: String = section.venue!!.id
-
-    val name: String = section.venue!!.name
-
-    val shortDescription: String = section.venue!!.shortDescription
-
-    val imageUrl: String = section.image.url
+    constructor(
+        section: SectionItem
+    ) : this(
+        id = section.venue!!.id,
+        name = section.venue.name,
+        shortDescription = section.venue.shortDescription,
+        imageUrl = section.image.url
+    )
 }

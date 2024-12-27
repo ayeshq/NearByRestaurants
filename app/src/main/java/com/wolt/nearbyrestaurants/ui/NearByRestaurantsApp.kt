@@ -7,11 +7,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wolt.nearbyrestaurants.R
-import com.wolt.nearbyrestaurants.ui.restaurants.HomeScreen
+import com.wolt.nearbyrestaurants.ui.restaurants.RestaurantsScreen
+import com.wolt.nearbyrestaurants.ui.restaurants.RestaurantsViewModel
 import com.wolt.nearbyrestaurants.ui.theme.NearByRestaurantsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,8 +36,8 @@ fun NearByRestaurantsApp() {
                 )
             }
         ) { innerPadding: PaddingValues ->
-            HomeScreen(
-                innerPadding = innerPadding
+            RestaurantsScreen(
+                innerPadding = innerPadding,
             )
         }
     }

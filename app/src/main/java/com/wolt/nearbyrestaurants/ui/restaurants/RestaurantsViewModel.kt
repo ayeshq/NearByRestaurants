@@ -14,11 +14,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class RestaurantsViewModel @Inject constructor(
     private val fetchNearByRestaurants: FetchNearByRestaurantsUseCase,
     locationTracker: LocationTracker
 ) : ViewModel() {
@@ -41,18 +42,20 @@ class HomeViewModel @Inject constructor(
     private fun observeLatestLocation() {
         //Load silently if there were previously rendered restaurants
         if (_state.value.restaurants.isEmpty()) {
-            _state.value = _state.value.copy(
-                isLoading = true,
-                isError = false
-            )
+            _state.update {
+                state.value.copy(
+                    uiState = UiState.Loading
+                )
+            }
         }
 
         val errorHandler = CoroutineExceptionHandler { _, error ->
-            _state.value = _state.value.copy(
-                isLoading = false,
-                isError = true,
-                error = error
-            )
+            _state.update {
+                _state.value.copy(
+                    uiState = UiState.Error,
+                    error = error
+                )
+            }
         }
 
         viewModelScope.launch(errorHandler) {
@@ -67,17 +70,34 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun previewRestaurants(restaurants: List<Restaurant>) {
-        _state.value = _state.value.copy(
-            isLoading = false,
-            isError = false,
-            restaurants = restaurants
-        )
+        _state.update {
+            _state.value.copy(
+                uiState = if (restaurants.isEmpty()) {
+                    UiState.Empty
+                } else {
+                    UiState.Preview
+                },
+
+                restaurants = restaurants
+            )
+        }
     }
 }
 
 data class NearByRestaurantsState(
-    val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val uiState: UiState = UiState.Loading,
     val error: Throwable? = null,
     val restaurants: List<Restaurant> = listOf()
 )
+
+enum class UiState {
+
+    // Shows a progressbar when loading if there were no cached restaurants
+    Loading,
+
+    Empty,
+
+    Error,
+
+    Preview
+}
