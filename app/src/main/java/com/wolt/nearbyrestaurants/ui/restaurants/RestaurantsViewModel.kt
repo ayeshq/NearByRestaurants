@@ -68,7 +68,7 @@ class RestaurantsViewModel @Inject constructor(
             observeLatestLocation()
         }
 
-        viewModelScope.launch(errorHandler) {
+        fetchRestaurantsJob = viewModelScope.launch(errorHandler) {
             latestLocation
                 .collectLatest { location ->
                     val nearByRestaurants = fetchNearByRestaurants(location)
