@@ -13,8 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,10 +27,9 @@ class RestaurantsViewModel @Inject constructor(
 
     private val latestLocation = locationTracker
         .latestLocation
-        .stateIn(
+        .shareIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = null
+            started = SharingStarted.Eagerly
         )
 
     private val _state = MutableStateFlow(NearByRestaurantsState())
@@ -72,7 +70,6 @@ class RestaurantsViewModel @Inject constructor(
 
         viewModelScope.launch(errorHandler) {
             latestLocation
-                .filterNotNull()
                 .collectLatest { location ->
                     val nearByRestaurants = fetchNearByRestaurants(location)
                     previewRestaurants(nearByRestaurants)
