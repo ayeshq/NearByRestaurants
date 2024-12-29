@@ -20,7 +20,10 @@ class RestaurantsRepositoryImpl @Inject constructor(
     private val dataStore: DataStore
 ) : RestaurantsRepository {
 
-    private val favourites = dataStore.readRecord<MutableList<String>>(KEY_FAVOURITE_RESTAURANTS, TYPE_FAVOURITES_LIST) ?: mutableListOf()
+    private val favourites = dataStore.readRecord<MutableList<String>>(
+        KEY_FAVOURITE_RESTAURANTS,
+        TYPE_FAVOURITES_LIST
+    ) ?: mutableListOf()
 
     private val service: RestaurantsService = initService()
 

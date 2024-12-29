@@ -3,6 +3,7 @@ package com.wolt.nearbyrestaurants.ui.restaurants
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wolt.nearbyrestaurants.location.LocationTracker
+import com.wolt.nearbyrestaurants.model.Location
 import com.wolt.nearbyrestaurants.model.Restaurant
 import com.wolt.nearbyrestaurants.restaurants.RestaurantsRepository
 import com.wolt.nearbyrestaurants.usecase.FetchNearByRestaurantsUseCase
@@ -10,10 +11,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,20 +24,18 @@ class RestaurantsViewModel @Inject constructor(
     locationTracker: LocationTracker
 ) : ViewModel() {
 
-    private val latestLocation = locationTracker
-        .latestLocation
-        .shareIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly
-        )
-
     private val _state = MutableStateFlow(NearByRestaurantsState())
     val state = _state.asStateFlow()
 
     private var fetchRestaurantsJob: Job? = null
 
     init {
-        observeLatestLocation()
+        viewModelScope
+            .launch {
+                locationTracker
+                    .latestLocation
+                    .collectLatest(::fetchRestaurantsNear)
+            }
     }
 
     fun onSaveRestaurantToggled(restaurantId: String) {
@@ -56,7 +53,7 @@ class RestaurantsViewModel @Inject constructor(
         restaurantsRepository.toggleFavouriteRestaurant(restaurantId)
     }
 
-    private fun observeLatestLocation() {
+    private fun fetchRestaurantsNear(location: Location) {
         fetchRestaurantsJob?.cancel()
 
         //Load silently if there were previously rendered restaurants
@@ -75,20 +72,15 @@ class RestaurantsViewModel @Inject constructor(
                     error = error
                 )
             }
-
-            observeLatestLocation()
         }
 
         fetchRestaurantsJob = viewModelScope.launch(errorHandler) {
-            latestLocation
-                .collectLatest { location ->
-                    val nearByRestaurants = fetchNearByRestaurants(location)
-                    previewRestaurants(nearByRestaurants)
-                }
+            val nearByRestaurants = fetchNearByRestaurants(location)
+            previewRestaurantsOrEmpty(nearByRestaurants)
         }
     }
 
-    private fun previewRestaurants(restaurants: List<Restaurant>) {
+    private fun previewRestaurantsOrEmpty(restaurants: List<Restaurant>) {
         _state.update {
             _state.value.copy(
                 uiState = if (restaurants.isEmpty()) {

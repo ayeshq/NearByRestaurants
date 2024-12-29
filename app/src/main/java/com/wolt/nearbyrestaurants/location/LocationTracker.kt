@@ -1,9 +1,9 @@
 package com.wolt.nearbyrestaurants.location
 
 import com.wolt.nearbyrestaurants.model.Location
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 
 interface LocationTracker {
 
-    val latestLocation: Flow<Location>
+    val latestLocation: SharedFlow<Location>
 }
