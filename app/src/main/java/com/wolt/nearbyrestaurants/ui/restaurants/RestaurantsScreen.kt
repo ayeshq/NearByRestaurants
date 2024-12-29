@@ -20,7 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -138,8 +138,8 @@ fun RestaurantsList(
         ) { index: Int ->
             RestaurantCard(
                 modifier = Modifier.animateItem(),
-                id = restaurants[index].id,
-                name = restaurants[index].name,
+                restaurantId = restaurants[index].id,
+                restaurantName = restaurants[index].name,
                 imageUrl = restaurants[index].imageUrl,
                 description = restaurants[index].shortDescription,
                 isInFavourites = restaurants[index].isSaved,
@@ -151,8 +151,8 @@ fun RestaurantsList(
 
 @Composable
 fun RestaurantCard(
-    id: String,
-    name: String,
+    restaurantId: String,
+    restaurantName: String,
     description: String,
     imageUrl: String,
     isInFavourites: Boolean = false,
@@ -185,7 +185,7 @@ fun RestaurantCard(
                         .data(imageUrl)
                         .crossfade(true)
                         .build(),
-                    contentDescription = name,
+                    contentDescription = restaurantName,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(48.dp)
@@ -193,28 +193,38 @@ fun RestaurantCard(
                         .align(Alignment.CenterStart)
                 )
 
-                IconButton(
-                    onClick = {
-                        onSaveToggled(id)
+                IconToggleButton(
+                    checked = inFavourites,
+                    onCheckedChange = {
                         inFavourites = !inFavourites
+                        onSaveToggled(restaurantId)
                     },
                     modifier = Modifier
                         .size(48.dp)
                         .align(Alignment.CenterEnd)
                 ) {
-                    Icon(
-                        imageVector = if (inFavourites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                        contentDescription = if (inFavourites) {
-                            stringResource(R.string.remove_from_favourites)
-                        } else {
-                            stringResource(R.string.add_to_favourites)
-                        },
-                    )
+                    if (inFavourites) {
+                        Icon(
+                            Icons.Filled.Favorite,
+                            contentDescription = stringResource(
+                                R.string.remove_from_favourites,
+                                restaurantName
+                            )
+                        )
+                    } else {
+                        Icon(
+                            Icons.Filled.FavoriteBorder,
+                            contentDescription = stringResource(
+                                R.string.add_to_favourites,
+                                restaurantName
+                            )
+                        )
+                    }
                 }
             }
 
             Text(
-                text = name,
+                text = restaurantName,
                 style = MaterialTheme.typography.titleLarge.copy(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -233,8 +243,8 @@ fun RestaurantCard(
 fun RestaurantCardPreview() {
     NearByRestaurantsTheme {
         RestaurantCard(
-            id = "",
-            name = "Dummy Restaurant",
+            restaurantId = "",
+            restaurantName = "Dummy Restaurant",
             description = "Details....",
             imageUrl = "",
         )
@@ -246,8 +256,8 @@ fun RestaurantCardPreview() {
 fun RestaurantCardPreviewNight() {
     NearByRestaurantsTheme {
         RestaurantCard(
-            id = "",
-            name = "Dummy Restaurant",
+            restaurantId = "",
+            restaurantName = "Dummy Restaurant",
             description = "Details....",
             imageUrl = "",
         )

@@ -2,7 +2,7 @@
     <string name="app_name">Nearby Restaurants</string>
     <string name="loading_nearby_restaurants">Looking for nearby restaurants…</string>
     <string name="no_restaurants_near_you">No restaurants found near you!</string>
-    <string name="remove_from_favourites">Remove from favourites</string>
-    <string name="add_to_favourites">Add to favourites</string>
+    <string name="remove_from_favourites">Remove %s from favourites</string>
+    <string name="add_to_favourites">Add %s to favourites</string>
     <string name="something_went_wrong">Something went wrong!</string>
 </resources>
