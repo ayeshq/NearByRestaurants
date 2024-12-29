@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,7 +59,7 @@ fun RestaurantsScreen(
     when (state.uiState) {
         UiState.Loading -> LoadingScreen()
         UiState.Empty -> EmptyScreen()
-        UiState.Error -> ErrorScreen()
+        UiState.Error -> ErrorScreen() // A snackbar would be more appropriate!
         UiState.Preview -> {
             RestaurantsList(
                 restaurants = state.restaurants
@@ -73,14 +76,30 @@ fun ErrorScreen() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Text(
-            text = stringResource(R.string.something_went_wrong),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge.copy(
-                color = MaterialTheme.colorScheme.error,
-            ),
-            modifier = Modifier.align(Alignment.Center)
-        )
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.Center)
+                // Merge elements for accessibility purposes
+                .semantics(mergeDescendants = true) {}
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Warning,
+                contentDescription = null, // decorative
+                modifier = Modifier
+                    .size(42.dp)
+                    .padding(end = 8.dp),
+                tint = MaterialTheme.colorScheme.onError,
+            )
+            Text(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                text = stringResource(R.string.something_went_wrong),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = MaterialTheme.colorScheme.onError,
+                ),
+            )
+        }
     }
 }
 
