@@ -26,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,9 +48,7 @@ import com.wolt.nearbyrestaurants.ui.theme.NearByRestaurantsTheme
 
 @Composable
 fun RestaurantsScreen(
-    modifier: Modifier = Modifier,
     viewModel: RestaurantsViewModel = viewModel(),
-    innerPadding: PaddingValues = PaddingValues(8.dp),
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -62,8 +59,6 @@ fun RestaurantsScreen(
         UiState.Error -> ErrorScreen()
         UiState.Preview -> {
             RestaurantsList(
-                modifier = modifier,
-                innerPadding = innerPadding,
                 restaurants = state.restaurants
             ) { id ->
                 viewModel.onSaveRestaurantToggled(id)
@@ -128,15 +123,12 @@ fun LoadingScreen() {
 
 @Composable
 fun RestaurantsList(
-    modifier: Modifier = Modifier,
-    innerPadding: PaddingValues = PaddingValues(8.dp),
     restaurants: List<Restaurant> = listOf(),
     onSaveToggled: (id : String) -> Unit
 ) {
     LazyColumn (
-        contentPadding = innerPadding,
+        contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier.padding(start = 8.dp, end = 8.dp),
     ) {
         items(
             count = restaurants.size,
