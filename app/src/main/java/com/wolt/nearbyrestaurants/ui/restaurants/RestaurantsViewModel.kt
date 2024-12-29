@@ -42,6 +42,17 @@ class RestaurantsViewModel @Inject constructor(
     }
 
     fun onSaveRestaurantToggled(restaurantId: String) {
+        _state.update {
+            _state.value.copy(
+                restaurants = _state.value.restaurants.also { list ->
+                    list.find {
+                        it.id == restaurantId
+                    }?.let {
+                        it.isSaved = !it.isSaved
+                    }
+                }
+            )
+        }
         restaurantsRepository.toggleFavouriteRestaurant(restaurantId)
     }
 

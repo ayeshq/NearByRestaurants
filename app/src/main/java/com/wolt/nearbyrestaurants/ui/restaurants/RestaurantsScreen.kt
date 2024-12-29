@@ -28,7 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -179,7 +179,7 @@ fun RestaurantCard(
     onSaveToggled: (id : String) -> Unit = {}
 ) {
 
-    var inFavourites by rememberSaveable { mutableStateOf(isInFavourites) }
+    var inFavourites by remember { mutableStateOf(isInFavourites) }
 
     Card(
         modifier = modifier
@@ -283,23 +283,24 @@ fun RestaurantCardPreviewNight() {
     }
 }
 
-@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun RestaurantsListPreview() {
     NearByRestaurantsTheme {
         RestaurantsList(
             restaurants = listOf(
                 Restaurant(
-                    "1",
-                    "Dummy Restaurant",
-                    "Details....",
-                    "",
+                    id = "1",
+                    name = "First Restaurant",
+                    shortDescription = "Details....",
+                    imageUrl = "",
                 ),
                 Restaurant(
-                    "2",
-                    "Dummy Restaurant",
-                    "Details....",
-                    ""
+                    id = "2",
+                    name = "Second Restaurant",
+                    shortDescription = "Details....",
+                    imageUrl = "",
+                    isSaved = true
                 )
             ),
             onSaveToggled = {}

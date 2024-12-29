@@ -5,7 +5,7 @@ data class Restaurant(
     val name: String,
     val shortDescription: String,
     val imageUrl: String,
-    val isSaved: Boolean = false
+    var isSaved: Boolean = false
 ) {
     constructor(
         section: SectionItem,
