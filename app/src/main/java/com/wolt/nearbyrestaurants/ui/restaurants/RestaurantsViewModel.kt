@@ -1,7 +1,10 @@
 package com.wolt.nearbyrestaurants.ui.restaurants
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wolt.nearbyrestaurants.dispatchers.DispatchersProvider
+import com.wolt.nearbyrestaurants.dispatchers.DispatchersProviderImpl
 import com.wolt.nearbyrestaurants.location.LocationTracker
 import com.wolt.nearbyrestaurants.model.Location
 import com.wolt.nearbyrestaurants.model.Restaurant
@@ -21,6 +24,7 @@ import javax.inject.Inject
 class RestaurantsViewModel @Inject constructor(
     private val fetchNearByRestaurants: FetchNearByRestaurantsUseCase,
     private val restaurantsRepository: RestaurantsRepository,
+    private val dispatchersProvider: DispatchersProvider = DispatchersProviderImpl(),
     locationTracker: LocationTracker
 ) : ViewModel() {
 
@@ -31,7 +35,7 @@ class RestaurantsViewModel @Inject constructor(
 
     init {
         viewModelScope
-            .launch {
+            .launch(dispatchersProvider.mainDispatcher) {
                 locationTracker
                     .latestLocation
                     .collectLatest(::fetchRestaurantsNear)
@@ -53,13 +57,14 @@ class RestaurantsViewModel @Inject constructor(
         restaurantsRepository.toggleFavouriteRestaurant(restaurantId)
     }
 
-    private fun fetchRestaurantsNear(location: Location) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun fetchRestaurantsNear(location: Location) {
         fetchRestaurantsJob?.cancel()
 
         //Load silently if there were previously rendered restaurants
         if (_state.value.restaurants.isEmpty()) {
             _state.update {
-                state.value.copy(
+                _state.value.copy(
                     uiState = UiState.Loading
                 )
             }
@@ -74,7 +79,7 @@ class RestaurantsViewModel @Inject constructor(
             }
         }
 
-        fetchRestaurantsJob = viewModelScope.launch(errorHandler) {
+        fetchRestaurantsJob = viewModelScope.launch(errorHandler + dispatchersProvider.mainDispatcher) {
             val nearByRestaurants = fetchNearByRestaurants(location)
             previewRestaurantsOrEmpty(nearByRestaurants)
         }
