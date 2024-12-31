@@ -4,7 +4,6 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wolt.nearbyrestaurants.dispatchers.DispatchersProvider
-import com.wolt.nearbyrestaurants.dispatchers.DispatchersProviderImpl
 import com.wolt.nearbyrestaurants.location.LocationTracker
 import com.wolt.nearbyrestaurants.model.Location
 import com.wolt.nearbyrestaurants.model.Restaurant
@@ -24,7 +23,7 @@ import javax.inject.Inject
 class RestaurantsViewModel @Inject constructor(
     private val fetchNearByRestaurants: FetchNearByRestaurantsUseCase,
     private val restaurantsRepository: RestaurantsRepository,
-    private val dispatchersProvider: DispatchersProvider = DispatchersProviderImpl(),
+    private val dispatchersProvider: DispatchersProvider,
     locationTracker: LocationTracker
 ) : ViewModel() {
 
@@ -108,7 +107,6 @@ data class NearByRestaurantsState(
 
 enum class UiState {
 
-    // Shows a progressbar when loading if there were no cached restaurants
     Loading,
 
     Empty,

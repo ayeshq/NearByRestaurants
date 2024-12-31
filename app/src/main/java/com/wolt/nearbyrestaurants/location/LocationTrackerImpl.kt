@@ -1,5 +1,6 @@
 package com.wolt.nearbyrestaurants.location
 
+import com.wolt.nearbyrestaurants.dispatchers.DispatchersProvider
 import com.wolt.nearbyrestaurants.model.Location
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -12,13 +13,8 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class LocationTrackerImpl @Inject constructor(
-
+    private val dispatchersProvider: DispatchersProvider
 ) : LocationTracker {
-
-    // A custom single thread dispatcher dedicated to only emitting the latest location
-    private val locationsDispatcher = Executors
-        .newSingleThreadExecutor()
-        .asCoroutineDispatcher()
 
     private val locations = listOf(
         Location(60.169418, 24.931618),
@@ -45,7 +41,7 @@ class LocationTrackerImpl @Inject constructor(
         }
     }.buffer(0) //Discard all emissions when there are no subscribers without stopping to simulate a walking user
         .shareIn(
-            scope = CoroutineScope(locationsDispatcher),
+            scope = CoroutineScope(dispatchersProvider.workerThreadDispatcher),
             started = SharingStarted.Eagerly,
             replay = 0
         )

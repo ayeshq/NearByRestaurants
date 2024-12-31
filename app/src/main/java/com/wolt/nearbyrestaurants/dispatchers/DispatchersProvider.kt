@@ -9,4 +9,8 @@ interface DispatchersProvider {
     val ioDispatcher: CoroutineDispatcher
 
     val defaultDispatcher: CoroutineDispatcher
+
+    val unConfinedDispatcher: CoroutineDispatcher
+
+    val workerThreadDispatcher: CoroutineDispatcher
 }
