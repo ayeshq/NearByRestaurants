@@ -4,9 +4,7 @@ import com.wolt.nearbyrestaurants.model.Location
 import com.wolt.nearbyrestaurants.model.Restaurant
 import javax.inject.Inject
 
-class FakeRestaurantsRepository @Inject constructor(
-
-) : RestaurantsRepository {
+class FakeRestaurantsRepository @Inject constructor() : RestaurantsRepository {
 
     var error = false
     var empty = false
